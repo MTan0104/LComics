@@ -27,6 +27,7 @@ Process:
 4. Copy all files into a single destination folde
 
 ❗**Key assumptions (must be understood before use)**
+
 1. Folder hierarchy structure
 The code loop inside folder that been setted up by HitMaP:
 ```python
@@ -103,6 +104,7 @@ ByRegion
 - Locus Coeruleus files
 
 ❗**Key assumptions (must be understood before use)**
+
 The script scans each file name for region identifiers and copies the files into corresponding directories, creating a structured dataset for downstream region-specific analysis.
 
 ```python
@@ -144,6 +146,7 @@ Output:
 - Skipped file report (if any)
 
 ❗**Key assumptions (must be understood before use)**
+
 This pipeline assumes that each input file contains the following columns:
 ```python
 {"Protein", "mz", "Peptide", "Modification", "adduct", "Intensity"}
@@ -236,6 +239,7 @@ Output:
 - metadata_removed_rows.csv
 
 ❗**Key assumptions (must be understood before use)**
+
 1. Matrix column naming format
 
 Matrix columns must follow:[TMA]__[Core]__[Region]. Example: 1668_18_GM.
@@ -296,6 +300,7 @@ Output:
 - SKIPPED_FILES_REPORT.txt
 
 ❗**Key assumptions (must be understood before use)**
+
 1. Extended feature definition
 ```python
 #required column:
