@@ -323,8 +323,7 @@ This will produce:
 in_dir = Path(r"YOUR_PATH_TO_ALL_FILES")
 ```
 ## Downstream Analysis – Statistical Modeling in R
-
-
+[GM 40Prec Proteomic Analysis (R)](https://github.com/meaghanomorris/LComics/blob/main/Statistical%20Modeling%20in%20R%20for%20GM.R)
 
 This component performs statistical analysis on the QC-filtered peptide matrix using R-based modeling approaches. Unlike the upstream Python pipeline, which focuses on data structuring and preprocessing, this step is designed to evaluate biological associations between peptide features and sample-level variables.
 
