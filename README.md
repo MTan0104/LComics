@@ -266,3 +266,53 @@ meta_path = "FinalDatabase.csv"
 Modify if:
 - using WM or LC datasets
 - metadata file name differs
+
+## Step 6 (Optional) – Global Feature Extraction for Validation
+[Matching Metadata.py](https://github.com/user-attachments/files/27377982/Matching.Metadata.py)
+
+This optional step generates a comprehensive list of unique peptide features across all HiTMaP output files, independent of region-specific processing. Unlike the main matrix construction workflow. This step is designed to support feature-level validation and cross-platform comparison, rather than statistical modeling. By retaining all possible feature combinations and explicitly reporting ambiguous mappings, it enables more rigorous downstream validation against independent datasets such as LC-MS/MS.
+
+The inclusion of mz_align expands feature resolution and ensures compatibility with alignment-based validation workflows.
+
+The pipeline aggregates all input files into a unified dataset and defines feature uniqueness based on a composite combination of protein annotation, m/z value, peptide sequence, modification, adduct, and aligned m/z (mz_align). By incorporating both measured and aligned m/z values, this step increases feature granularity and enables more exhaustive comparison with orthogonal validation data such as LC-MS/MS.
+
+In addition, the pipeline explicitly identifies cases where a single m/z value is associated with multiple peptide sequences, generating a conflict report to highlight ambiguous or potentially misassigned features.
+
+Input:
+- All HiTMaP output CSV files (across all regions)
+
+Process:
+- Read and validate required columns
+- Aggregate all files into a master dataset
+- Clean and standardize feature fields
+- Identify m/z-to-peptide conflicts
+- Define unique features using extended feature definition
+- Sort and export full feature list
+
+Output:
+- ALL_UNIQUE_FEATURES_LIST.csv
+- MZ_PEPTIDE_CONFLICT_REPORT.txt
+- SKIPPED_FILES_REPORT.txt
+
+❗**Key assumptions (must be understood before use)**
+1. Extended feature definition
+```python
+#required column:
+["Protein", "mz", "Peptide", "mz_align", "desc", "Modification", "adduct"]
+#which:
+Feature = Protein + mz + Peptide + Modification + adduct + mz_align + desc
+```
+Compared to the main pipeline:
+- includes mz_align
+- includes desc
+- retains more granular distinctions
+
+This will produce:
+- more features
+- higher redundancy
+- increased ambiguity (intentional for validation)
+
+2. Input directory
+```python
+in_dir = Path(r"YOUR_PATH_TO_ALL_FILES")
+```
