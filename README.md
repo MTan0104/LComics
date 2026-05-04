@@ -61,6 +61,7 @@ For each file, You want to build:
 new_name = f"{core_name}_{sample_name}_Peptide_Summary.csv"
 ```
 2. Folder names encode metadata
+
 The script assumes:
 -Core identity is stored in the core folder name
 -Sample identity is stored in the sample folder name
