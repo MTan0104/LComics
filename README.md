@@ -21,52 +21,72 @@ Input:
   (each containing sample-level subfolders and summary outputs)
 
 Process:
-- Recursively search all subfolders for Peptide_Summary.csv files
-- Extract core and sample identifiers from folder hierarchy
-- Rename files into a standardized format
-- Copy all files into a single destination folde
+1. Recursively search all subfolders for Peptide_Summary.csv files
+2. Extract core and sample identifiers from folder hierarchy
+3. Rename files into a standardized format
+4. Copy all files into a single destination folde
 
-the code loop inside folder that been setted up by HitMaP:
+❗**Key assumptions (must be understood before use)**
+1. Folder hierarchy structure
+The code loop inside folder that been setted up by HitMaP:
 ```python
 summary_folder = peptide_file.parent
 sample_folder = summary_folder.parent
 core_folder = sample_folder.parent
+
+# Root/
+# ├── XXXX finished/
+# │   ├── Sample/
+# │   │   └── Summary/
+# │   │       └── Peptide_Summary.csv
 ```
-for example:
+The extraction logic depends on this structure, for example:
 ```python
-E:\Finished Core
-├── 1173 finished
-│   ├── Sample A
-│   │   └── Summary
-│   │       └── Peptide_Summary.csv
-│   ├── Sample B
-│       └── Summary
-│           └── Peptide_Summary.csv
-├── 1174 finished
-    ├── Sample C
-        └── Summary
-            └── Peptide_Summary.csv
-......
+#  E:\Finished Core #project specific naming
+#  ├── 1173 finished #project specific naming
+#  │   ├── Sample A
+#  │   │   └── Summary
+#  │   │       └── Peptide_Summary.csv
+#  │   ├── Sample B
+#  │       └── Summary
+#  │           └── Peptide_Summary.csv
+#  ├── 1174 finished
+#      ├── Sample C
+#          └── Summary
+#              └── Peptide_Summary.csv
+#  ......
 ```
+For each file, You want to build:
+```python
+new_name = f"{core_name}_{sample_name}_Peptide_Summary.csv"
+```
+2. Folder names encode metadata
+The script assumes:
+-Core identity is stored in the core folder name
+-Sample identity is stored in the sample folder name
+```python
+core_name = core_folder.name.replace(" ", "_")
+sample_name = sample_folder.name.replace(" ", "_")
+```
+3.Output naming convention
 
+Files are renamed as: [Core]_[Sample]_Peptide_Summary.csv. This naming is specific to this project, which should be adjust for other cases.
 
-## Step 2- 
+4. Destination location
+
+```python
+dest = Path.home() / "Desktop" / "All_Peptide_Summaries"
+```
+The output path will be the input path for **Step 2 - Separating Files into Brain Regions**
+
+## Step 2 - Separating Files into Brain Regions
 [Separating Files into Brain Regions.py](https://github.com/user-attachments/files/27374390/Separating.Files.into.Brain.Regions.py)
 
 
 This step organizes raw HiTMaP output files (Peptide_Summary.csv) into region-specific folders based on brain region annotations embedded in file names. All files are initially placed in a single directory and then automatically sorted into Gray Matter (GM), White Matter (WM), and Locus Coeruleus (LC) subfolders.
 
-The script scans each file name for region identifiers and copies the files into corresponding directories, creating a structured dataset for downstream region-specific analysis.
-
-```python
-_GM_
-_WM_
-_LC_
-```
-Your file has to be named with those region identifiers or you can alter it for your project 
-
 Input:
-- Folder containing all HiTMaP Peptide_Summary.csv files
+- Folder containing all HiTMaP Peptide_Summary.csv files from Step 1 Extracting Files from HiTMaP. 
 
 Process:
 - Detect region from filename
@@ -79,7 +99,15 @@ ByRegion
 - White Matter files
 - Locus Coeruleus files
 
-Required user modifications
+❗**Key assumptions (must be understood before use)**
+The script scans each file name for region identifiers and copies the files into corresponding directories, creating a structured dataset for downstream region-specific analysis.
+
+```python
+_GM_
+_WM_
+_LC_
+```
+Your file has to be named with those region identifiers or you can alter it for your project 
 
 Before running the script, you must update the file path:
 ```python
@@ -90,7 +118,7 @@ data_dir = Path(r"YOUR_PATH_TO_PEPTIDE_SUMMARY_FILES")
 data_dir = Path(r"D:\LC_project\HiTMaP_outputs")
 ```
 
-## Step 2 – Matrix Construction from HiTMaP Output
+## Step 3 – Matrix Construction from HiTMaP Output
 [Matrix Construction from HiTMaP Output.py](https://github.com/user-attachments/files/27371770/Matrix.Construction.from.HiTMaP.Output.py)
 
 This step reconstructs a unified quantitative matrix from region-specific HiTMaP output files by transforming individual sample-level peptide summaries into a structured feature-by-sample matrix. Each input CSV file represents a single sample, and peptide-level intensity values are aggregated across all samples to form a consistent dataset suitable for downstream statistical analysis.
@@ -112,6 +140,7 @@ Output:
 - [Region]_Raw_matrix.csv
 - Skipped file report (if any)
 
+❗**Key assumptions (must be understood before use)**
 This pipeline assumes that each input file contains the following columns:
 ```python
 {"Protein", "mz", "Peptide", "Modification", "adduct", "Intensity"}
@@ -124,7 +153,7 @@ output_file = "Region_Raw_matrix.csv" #Region in this project is GM, WM or LC
 
 If a comprehensive feature set without region-specific separation is required (e.g., for global feature enumeration or cross-region comparison), please refer to [Step X – Global Feature Aggregation](#step-x--global-feature-aggregation), where all HiTMaP-derived features are consolidated into a unified dataset prior to region-specific processing.
 
-## Step 3 – Data Thresholding and Quality Control
+## Step 4 – Data Thresholding and Quality Control
 [Data Thresholding and Quality Control.py](https://github.com/user-attachments/files/27372205/Data.Thresholding.and.Quality.Control.py)
 
 This step performs quality control (QC) and filtering on the reconstructed peptide-by-sample matrix to remove low-quality samples and low-confidence features. The goal is to improve data robustness while preserving biologically meaningful signal for downstream statistical analysis.
@@ -150,7 +179,7 @@ Output:
 
 ❗**Key assumptions (must be understood before use)**
 
-**1. Detection definition**
+1. Detection definition
 ```python
 presence_threshold = 0.0
 ```
@@ -159,13 +188,13 @@ A peptide is considered detected
 
 This assumption is valid for SCiLS Lab TIC-normalized MALDI-MSI data Zero represents non-detection or below detection limit
 
-**2. Sample-level filtering**
+2. Sample-level filtering
 ```python
 min_sample_hits = 20
 ```
 Samples are retained only if they contain: **≥ 20 detected peptides** 
 
-**3. Peptide-level filtering (core threshold)**
+3. Peptide-level filtering (core threshold)
    ```python
    min_fraction = 0.40
    min_peptide_samples = ceil(0.40 × number_of_samples)
@@ -185,4 +214,55 @@ This renaming logic is: specific to this project. If using a different dataset: 
 matrix_file = Path(r"YOUR_PATH_TO_RAW_MATRIX")
 #one region at a time (e.g., GM, WM, LC)
 ```
+## Step 5 – Metadata Matching and Integration
+This step aligns the QC-filtered peptide matrix with sample-level metadata by matching each matrix column to its corresponding biological annotation. The matching is performed using structured identifiers extracted from sample column names, ensuring that each sample is correctly linked to metadata such as tissue diagnosis and experimental variables.
 
+To support region-specific analysis, metadata entries are expanded to include region-level identifiers, allowing direct mapping between matrix columns and anatomical regions (GM, WM, LC). The final output is a metadata table that is fully synchronized with the matrix and ready for downstream statistical modeling. Those identifiers are specific for this project, an only applied if 
+
+Input:
+- FINAL_[Region]_QC_matrix.csv (from Step 4)
+- Metadata file (FinalDatabase.csv)
+
+Process:
+- Validate metadata structure and required columns
+- Parse matrix column names into (TMA, Core, Region)
+- Expand metadata to region-level entries
+- Match matrix samples to metadata
+- Identify unmatched or removed samples
+
+Output:
+- metadata_MATCHED.csv
+- metadata_removed_rows.csv
+
+❗**Key assumptions (must be understood before use)**
+1. Matrix column naming format
+
+Matrix columns must follow:[TMA]__[Core]__[Region]. Example: 1668_18_GM.
+This format is required for parsing:
+```python
+r"^(?P<tma>\d+)_(?P<core>\d+)_(?P<region>GM|WM|LC)$"
+```
+
+2. Required metadata columns
+Metadata must contain: ["TMA", "Core", "TissueDiagnosisID"]
+
+3. TissueRegionID construction
+The TissueRegionID construction used in this project is specific to this dataset, where each regional identifier is required to be unique and non-repetitive to ensure accurate mapping between matrix columns and metadata entries.
+```python
+TissueRegionID = TissueDiagnosisID + "_" + Region
+```
+This assumes:
+-Each core contains all regions (GM, WM, LC)
+-Region labels match those in the matrix
+
+This creates a unique identifier for region-level analysis.
+
+4. Working directory
+```python
+os.chdir("YOUR_SUMMARY_FOLDER_PATH")
+matrix_path = "FINAL_GM_QC_matrix.csv"
+meta_path = "FinalDatabase.csv"
+```
+Modify if:
+-using WM or LC datasets
+-metadata file name differs
