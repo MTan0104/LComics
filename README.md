@@ -81,7 +81,7 @@ dest = Path.home() / "Desktop" / "All_Peptide_Summaries"
 ```
 The output path will be the input path for **Step 2 - Separating Files into Brain Regions**
 
-If a comprehensive feature set without region-specific separation is required (e.g., for global feature enumeration or cross-region comparison), please refer to [Step 6 (Optional) – Global Feature Extraction for Validation](#step-6--Global-Feature-Extraction-for-Validation), where all HiTMaP-derived features are consolidated into a unified dataset prior to region-specific processing.
+If a comprehensive feature set without region-specific separation is required (e.g., for global feature enumeration or cross-region comparison), please refer to [Step 6 (Optional) – Global Feature Extraction for Validation](#step-6-optional--global-feature-extraction-for-validation), where all HiTMaP-derived features are consolidated into a unified dataset prior to region-specific processing.
 
 ## Step 2 - Separating Files into Brain Regions
 [Separating Files into Brain Regions.py](https://github.com/user-attachments/files/27374390/Separating.Files.into.Brain.Regions.py)
