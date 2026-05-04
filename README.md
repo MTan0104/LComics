@@ -252,8 +252,8 @@ The TissueRegionID construction used in this project is specific to this dataset
 TissueRegionID = TissueDiagnosisID + "_" + Region
 ```
 This assumes:
--Each core contains all regions (GM, WM, LC)
--Region labels match those in the matrix
+- Each core contains all regions (GM, WM, LC)
+- Region labels match those in the matrix
 
 This creates a unique identifier for region-level analysis.
 
@@ -264,5 +264,5 @@ matrix_path = "FINAL_GM_QC_matrix.csv"
 meta_path = "FinalDatabase.csv"
 ```
 Modify if:
--using WM or LC datasets
--metadata file name differs
+- using WM or LC datasets
+- metadata file name differs
