@@ -322,3 +322,80 @@ This will produce:
 ```python
 in_dir = Path(r"YOUR_PATH_TO_ALL_FILES")
 ```
+## Downstream Analysis – Statistical Modeling in R
+
+
+
+This component performs statistical analysis on the QC-filtered peptide matrix using R-based modeling approaches. Unlike the upstream Python pipeline, which focuses on data structuring and preprocessing, this step is designed to evaluate biological associations between peptide features and sample-level variables.
+
+The analysis operates on the final processed matrix and matched metadata, integrating molecular measurements with experimental and pathological annotations. Linear modeling frameworks are applied to identify feature-level associations with variables such as disease stage, genotype, and cellular measurements.
+
+This component is implemented in R to leverage established statistical and bioinformatics libraries optimized for high-dimensional omics data analysis.
+
+Input:
+- FINAL_[Region]_QC_matrix.csv
+- metadata_MATCHED.csv
+
+Process:
+- Load and preprocess matrix and metadata
+- Transform intensity values (e.g., log transformation)
+- Subset data based on variables of interest
+- Fit statistical models (e.g., linear mixed models)
+- Extract coefficients, p-values, and significance metrics
+- Generate summary tables and visualizations
+
+Output:
+- Statistical result tables
+- Model summaries
+- Visualization outputs (e.g., volcano plots, PCA)
+
+❗**Key assumptions (must be understood before use)**
+
+1. Input data structure
+
+The analysis assumes:
+
+Peptide matrix:
+- Rows = Peptide_ID
+- Columns = Samples
+
+Metadata:
+- One row per sample
+- Matched to matrix columns
+
+2. Variable definitions (Project-Specific – Analysis Variables)
+
+The variables used in this analysis are specific to this study and reflect the structure of the associated metadata. Factor definitions, subgrouping strategies, and data subsetting steps are tailored to the experimental design and available annotations (e.g., pathology staging, genotype, and cellular measurements).
+
+As a result, the current implementation assumes:
+- predefined categorical variables (e.g., Braak stage, Thal phase, APOE status)
+- specific encoding of these variables within the metadata
+- project-specific grouping and filtering criteria
+
+These configurations are not universally applicable. For use in other datasets, users must modify:
+- factor definitions and levels  
+- subsetting conditions  
+- model formulas and covariates  
+
+to reflect the structure and biological context of their own data.
+  
+3. Model structure
+```R
+Feature ~ Variable + (1 | Batch/TMA)
+```
+This assumes:
+
+-presence of batch or TMA effects
+-random intercept structure is appropriate
+
+4. Region-Specific Analysis
+
+The provided code example is configured for Gray Matter (GM) analysis. All analyses in this pipeline are performed on a region-specific basis (GM, WM, LC) and are not combined unless explicitly specified.
+
+For application to other regions, users must update:
+- input file paths to the corresponding region-specific datasets  
+- output file names to reflect the region of interest  
+- any region-dependent parameters if applicable  
+
+For example, replace `GM` with the appropriate region label (`WM` or `LC`) to match the focus of your analysis.
+
