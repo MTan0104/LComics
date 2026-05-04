@@ -79,6 +79,8 @@ dest = Path.home() / "Desktop" / "All_Peptide_Summaries"
 ```
 The output path will be the input path for **Step 2 - Separating Files into Brain Regions**
 
+If a comprehensive feature set without region-specific separation is required (e.g., for global feature enumeration or cross-region comparison), please refer to [Step 6 (Optional) – Global Feature Extraction for Validation](#step-6--Global-Feature-Extraction-for-Validation), where all HiTMaP-derived features are consolidated into a unified dataset prior to region-specific processing.
+
 ## Step 2 - Separating Files into Brain Regions
 [Separating Files into Brain Regions.py](https://github.com/user-attachments/files/27374390/Separating.Files.into.Brain.Regions.py)
 
@@ -150,8 +152,6 @@ This script is not plug-and-play. The following elements must be adjusted depend
 data_dir = Path(r"YOUR_PATH_TO_REGION_FOLDER")
 output_file = "Region_Raw_matrix.csv" #Region in this project is GM, WM or LC
 ```
-
-If a comprehensive feature set without region-specific separation is required (e.g., for global feature enumeration or cross-region comparison), please refer to [Step X – Global Feature Aggregation](#step-x--global-feature-aggregation), where all HiTMaP-derived features are consolidated into a unified dataset prior to region-specific processing.
 
 ## Step 4 – Data Thresholding and Quality Control
 [Data Thresholding and Quality Control.py](https://github.com/user-attachments/files/27372205/Data.Thresholding.and.Quality.Control.py)
