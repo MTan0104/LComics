@@ -68,7 +68,7 @@ The script assumes:
 core_name = core_folder.name.replace(" ", "_")
 sample_name = sample_folder.name.replace(" ", "_")
 ```
-3.Output naming convention
+3. Output naming convention
 
 Files are renamed as: [Core]_[Sample]_Peptide_Summary.csv. This naming is specific to this project, which should be adjust for other cases.
 
